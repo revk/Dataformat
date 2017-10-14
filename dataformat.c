@@ -570,7 +570,7 @@ form (char *i)
    return out;
 }
 
-#ifndef LIB
+#ifdef MAIN
 // main
 int
 main (int argc, char *argv[])
