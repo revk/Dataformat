@@ -264,9 +264,9 @@ ccard (char *d)
          }
       } else
       {
-         for (p = 0; p < 6 && p < strlen (d); p++)
+         for (p = 0; p < 6 && p < (int)strlen (d); p++)
             *o++ = d[p];
-         for (; p < strlen (d); p++)
+         for (; p < (int)strlen (d); p++)
          {
             if (p % 4 == 2)
                *o++ = ' ';
@@ -331,7 +331,7 @@ dataformat_email_n (char *target, int len, const char *source)
 {                               // Email syntax check and case fix
    if (!source)
       return NULL;
-   if (strlen (source) >= len)
+   if ((int)strlen (source) >= len)
       return NULL;
    strcpy (target, source);
    int dot = 0;
@@ -387,7 +387,7 @@ dataformat_email_n (char *target, int len, const char *source)
 char *
 dataformat_domain_n (char *target, int len, const char *source)
 {                               // Domain syntax check and lower case
-   if (strlen (source) >= len)
+   if ((int)strlen (source) >= len)
       return NULL;
    strcpy (target, source);
    int dot = 0;
@@ -413,7 +413,7 @@ dataformat_domain_n (char *target, int len, const char *source)
 char *
 dataformat_token_n (char *target, int len, const char *source, const char *chars)
 {                               // Check for token (letter then letters+numbers + chars) and upper case
-   if (strlen (source) >= len)
+   if ((int)strlen (source) >= len)
       return NULL;
    strcpy (target, source);
    char *i = target;
@@ -434,7 +434,7 @@ dataformat_token_n (char *target, int len, const char *source, const char *chars
 char *
 dataformat_posttown_n (char *target, int len, const char *source)
 {                               // Check for post town - letters only allowing hyphens, and upper case
-   if (strlen (source) >= len)
+   if ((int)strlen (source) >= len)
       return NULL;
    strcpy (target, source);
    char *i = target;
@@ -451,7 +451,7 @@ dataformat_posttown_n (char *target, int len, const char *source)
 char *
 dataformat_name_n (char *target, int len, const char *source)
 {                               // Check format for a name - force to initial upper then lower on each word
-   if (strlen (source) >= len)
+   if ((int)strlen (source) >= len)
       return NULL;
    strcpy (target, source);
    char *i = target,
@@ -474,7 +474,7 @@ dated (char *s)
      b,
      c;
    char timed = 0;
-   static char o[20];
+   static char o[100];
    struct tm t = { 0 };
 
    if (sscanf (s, "%d-%d-%d", &a, &b, &c) == 3)
