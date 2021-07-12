@@ -652,6 +652,6 @@ main (int argc, char *argv[])
    if (!y && !n)
       fprintf (stderr,
                "dataformat [-tpasuicwedxD] <fields>\n-t\tTelephone numbers expected\n-p\tPostcodes expected\n-a\tAuto identify\n-s\tSpace the output\n-i\tInt format telephone number\n-u\tUK format telephone numbers\n-c\tCredit card number\n-w\tWords\n-e\tEmail\n-d\tDate\n-x\tExpand env name\n-n\tNetwork ip/bits\n-D\tDomain\n");
-   return n;
+   return !y;
 }
 #endif
