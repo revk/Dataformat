@@ -1,10 +1,10 @@
 all: dataformat.o dataformat
 
-dataformat.o: dataformat.c
-	cc -g -Wall -Wextra -O -c -o dataformat.o dataformat.c
+dataformat.o: dataformat.c Makefile
+	cc -g -Wall -Wextra -O -c -o dataformat.o dataformat.c -DLIB
 
-dataformat: dataformat.c
-	cc -g -Wall -Wextra -c -o dataformat.o dataformat.c
+dataformat: dataformat.c Makefile
+	cc -g -Wall -Wextra -o dataformat dataformat.c
 
 clean:
 	rm -f *.o
