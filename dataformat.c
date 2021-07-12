@@ -33,16 +33,15 @@ char uktel = 0;
 char ftype = 'a';
 
 // format a postcode (formats to static buffer)
-char *
-dataformat_postcode_n (char *res, int len, const char *p, int space)
+char *dataformat_postcode_n(char *res, int len, const char *p, int space)
 {
    if (!p)
       return NULL;
    int f = 0,
-      t = 0;
+       t = 0;
    while (p[f] && t < len - 2)  // make sure not too long, allowing for space to be added later
-      if (isalnum (p[f]))
-         res[t++] = toupper (p[f++]);
+      if (isalnum(p[f]))
+         res[t++] = toupper(p[f++]);
       else
          f++;
    if (p[f])
@@ -51,21 +50,21 @@ dataformat_postcode_n (char *res, int len, const char *p, int space)
    if (t < 5 || t > 7)
       return NULL;              // wrong length
    f = 0;
-   if (isalpha (res[f]))        // letter
+   if (isalpha(res[f]))         // letter
    {
       f++;
-      if (isalpha (res[f]))
+      if (isalpha(res[f]))
          f++;                   // optional second letter
-      if (isdigit (res[f]))     // digit
+      if (isdigit(res[f]))      // digit
       {
          f++;
          if (t - f == 4)
             f++;                // optional second digit or letter
-         if (t - f == 3 && isdigit (res[f]) && isalpha (res[f + 1]) && isalpha (res[f + 2]))
+         if (t - f == 3 && isdigit(res[f]) && isalpha(res[f + 1]) && isalpha(res[f + 2]))
          {                      // digit letter letter
             if (space)
             {
-               memmove (res + t - 2, res + t - 3, 4);
+               memmove(res + t - 2, res + t - 3, 4);
                res[t - 3] = ' ';
                t++;
             }
@@ -79,18 +78,17 @@ dataformat_postcode_n (char *res, int len, const char *p, int space)
 // format a telephone number (formats to a static buffer)
 // space means add appropriate spaces (for UK numbers)
 // uktel means output as Uk national number (otherwise int format)
-char *
-dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
+char *dataformat_telephone_n(char *res, int len, const char *p, int space, int uktel)
 {
    if (!p)
       return NULL;
    int f = 0,
-      t = 0;
+       t = 0;
    // first normalise number to international format
    if (p[f] == '+')
       res[t++] = p[f++];        // int prefix
    while (p[f] && t < len - 10)
-      if (isdigit (p[f]))
+      if (isdigit(p[f]))
          res[t++] = p[f++];
       else if (p[f] == '-' || p[f] == '(' || p[f] == ')' || p[f] == '-' || p[f] == '.' || p[f] == ' ')
          f++;
@@ -102,12 +100,12 @@ dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
    if (res[0] == '0' && res[1] == '0' && res[2] != '0') // International 00 prefix
    {
       res[0] = '+';
-      memmove (res + 1, res + 2, t - 1);
+      memmove(res + 1, res + 2, t - 1);
       t--;
    }
    if (res[0] == '0' && res[1] != '0')  // Local 0 prefix, assume UK
    {
-      memmove (res + 3, res + 1, t);
+      memmove(res + 3, res + 1, t);
       res[0] = '+';
       res[1] = '4';
       res[2] = '4';
@@ -115,7 +113,7 @@ dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
    }
    if (res[0] != '+' && res[0] != '0' && t > 10 && t + 1 < len - 10)
    {                            // Messy, assume international without the +
-      memmove (res + 1, res, ++t);
+      memmove(res + 1, res, ++t);
       res[0] = '+';
    }
    if (res[0] != '+')
@@ -183,15 +181,14 @@ dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
          {
             if (res[t - 6] == res[t - 3] || res[t - 5] == res[t - 4])
                spacing |= (1 << (t - 4));
-            else if ((res[t - 6] == res[t - 4] && res[t - 4] == res[t - 2])
-                     || (res[t - 5] == res[t - 3] && res[t - 3] == res[t - 1]))
+            else if ((res[t - 6] == res[t - 4] && res[t - 4] == res[t - 2]) || (res[t - 5] == res[t - 3] && res[t - 3] == res[t - 1]))
                spacing |= (1 << (t - 5)) | (1 << (t - 3));
          }
          // apply spacing
          for (f = t - 2; f >= 0; f--)
             if (spacing & (1 << f))
             {
-               memmove (res + f + 2, res + f + 1, t - f);
+               memmove(res + f + 2, res + f + 1, t - f);
                res[f + 1] = ' ';
                t++;
             }
@@ -200,10 +197,10 @@ dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
       {                         // change to UK dialling
          if (res[3] == ' ')
          {
-            memmove (res + 1, res + 4, t - 3);
+            memmove(res + 1, res + 4, t - 3);
             t -= 3;
          } else
-            memmove (res + 1, res + 3, t - 2);
+            memmove(res + 1, res + 3, t - 2);
          t -= 2;
          res[0] = '0';
       }
@@ -214,24 +211,23 @@ dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
    return res;
 }
 
-char *
-ccard (char *d)
+char *ccard(char *d)
 {
    char *i,
-    *o,
-     c = 0;
+   *o,
+    c = 0;
    int p;
 
    for (i = d, o = i; *i; i++)
-      if (isdigit (*i))
+      if (isdigit(*i))
          *o++ = *i;
    *o = 0;
 
-   if (strlen (d) < 6)
+   if (strlen(d) < 6)
       return NULL;
-   if (strlen (d) > 19)
+   if (strlen(d) > 19)
       return NULL;
-   for (p = strlen (d) - 1; p >= 0; p--)
+   for (p = strlen(d) - 1; p >= 0; p--)
    {
       c += d[p] - '0';
       c %= 10;
@@ -254,7 +250,7 @@ ccard (char *d)
    {
       static char res[50];
       o = res;
-      if (strlen (d) == 16)
+      if (strlen(d) == 16)
       {
          for (p = 0; p < 16; p++)
          {
@@ -264,9 +260,9 @@ ccard (char *d)
          }
       } else
       {
-         for (p = 0; p < 6 && p < (int)strlen (d); p++)
+         for (p = 0; p < 6 && p < (int) strlen(d); p++)
             *o++ = d[p];
-         for (; p < (int)strlen (d); p++)
+         for (; p < (int) strlen(d); p++)
          {
             if (p % 4 == 2)
                *o++ = ' ';
@@ -279,61 +275,58 @@ ccard (char *d)
    return d;
 }
 
-char *
-words (char *c)
+char *words(char *c)
 {
    char *a = c,
-      *b = c;
+       *b = c;
    while (*a)
    {
       if (*a == '(')
       {
          *b++ = *a++;
-         while (isalpha (*a))
+         while (isalpha(*a))
             *b++ = *a++;
          if (*a == ')')
             *b++ = *a++;
-      } else if (isalpha (*a))
+      } else if (isalpha(*a))
       {
-         if (uktel || a == c || isspace (a[-1]))
-            *b++ = toupper (*a);
-         else if (isalpha (a[-1]) && (a < c + 3 || a[-3] != 'M' || a[-2] != 'a' || a[-1] != 'c')
-                  && (a < c + 2 || a[-2] != 'M' || a[-1] != 'c'))
-            *b++ = tolower (*a);
+         if (uktel || a == c || isspace(a[-1]))
+            *b++ = toupper(*a);
+         else if (isalpha(a[-1]) && (a < c + 3 || a[-3] != 'M' || a[-2] != 'a' || a[-1] != 'c') && (a < c + 2 || a[-2] != 'M' || a[-1] != 'c'))
+            *b++ = tolower(*a);
          else
             *b++ = *a;
          a++;
-      } else if (isdigit (*a) || *a == '-' || *a == '\'' || *a == '&' || *a == '.')
+      } else if (isdigit(*a) || *a == '-' || *a == '\'' || *a == '&' || *a == '.')
          *b++ = *a++;
-      else if (space && isspace (*a) && a != c && !isspace (a[-1]))
+      else if (space && isspace(*a) && a != c && !isspace(a[-1]))
       {
          *b++ = ' ';
          a++;
       } else
          a++;
    }
-   while (b > c && isspace (b[-1]))
+   while (b > c && isspace(b[-1]))
       b--;
    if (*b)
       *b = 0;
 #if 0
    for (a = c; *a; a++)
    {
-      if (*a == 'M' && (a == c || isspace (a[-1])) && a[1] == 'c' && isalpha (a[2]))
-         a[2] = toupper (a[2]);
+      if (*a == 'M' && (a == c || isspace(a[-1])) && a[1] == 'c' && isalpha(a[2]))
+         a[2] = toupper(a[2]);
    }
 #endif
    return c;
 }
 
-char *
-dataformat_email_n (char *target, int len, const char *source)
+char *dataformat_email_n(char *target, int len, const char *source)
 {                               // Email syntax check and case fix
    if (!source)
       return NULL;
-   if ((int)strlen (source) >= len)
+   if ((int) strlen(source) >= len)
       return NULL;
-   strcpy (target, source);
+   strcpy(target, source);
    int dot = 0;
    char *i = target;
    if (*i == '"')
@@ -355,7 +348,7 @@ dataformat_email_n (char *target, int len, const char *source)
          {
             if (i == target || i[1] == '@' || i[1] == '.')
                return NULL;     // invalid use of a dot
-         } else if (!(isalnum (*i) || strchr ("!#$%&'*+-/=?^_`{|}~", *i)))
+         } else if (!(isalnum(*i) || strchr("!#$%&'*+-/=?^_`{|}~", *i)))
             return NULL;
          i++;
       }
@@ -368,8 +361,8 @@ dataformat_email_n (char *target, int len, const char *source)
       return NULL;
    while (*i)
    {
-      *i = tolower (*i);
-      if (*i != '.' && *i != '-' && !isalnum (*i))
+      *i = tolower(*i);
+      if (*i != '.' && *i != '-' && !isalnum(*i))
          return NULL;
       if ((*i == '-' || *i == '.') && (i[-1] == '@' || i[-1] == '.' || i[1] == '.' || !i[1]))
          return NULL;
@@ -384,18 +377,17 @@ dataformat_email_n (char *target, int len, const char *source)
    return target;
 }
 
-char *
-dataformat_domain_n (char *target, int len, const char *source)
+char *dataformat_domain_n(char *target, int len, const char *source)
 {                               // Domain syntax check and lower case
-   if ((int)strlen (source) >= len)
+   if ((int) strlen(source) >= len)
       return NULL;
-   strcpy (target, source);
+   strcpy(target, source);
    int dot = 0;
    char *i = target;
    while (*i)
    {
-      *i = tolower (*i);
-      if (*i != '.' && *i != '-' && !isalnum (*i))
+      *i = tolower(*i);
+      if (*i != '.' && *i != '-' && !isalnum(*i))
          return NULL;
       if ((*i == '-' || *i == '.') && (i == target || i[-1] == '.' || i[1] == '.' || !i[1]))
          return NULL;
@@ -410,78 +402,74 @@ dataformat_domain_n (char *target, int len, const char *source)
    return target;
 }
 
-char *
-dataformat_token_n (char *target, int len, const char *source, const char *chars)
+char *dataformat_token_n(char *target, int len, const char *source, const char *chars)
 {                               // Check for token (letter then letters+numbers + chars) and upper case
-   if ((int)strlen (source) >= len)
+   if ((int) strlen(source) >= len)
       return NULL;
-   strcpy (target, source);
+   strcpy(target, source);
    char *i = target;
-   if (!isalpha (*target))
+   if (!isalpha(*target))
       return NULL;
-   *i = toupper (*i);
+   *i = toupper(*i);
    i++;
    while (*i)
    {
-      *i = toupper (*i);
-      if (!isalnum (*i) && (!chars || !strchr (chars, *i)))
+      *i = toupper(*i);
+      if (!isalnum(*i) && (!chars || !strchr(chars, *i)))
          return NULL;
       i++;
    }
    return target;
 }
 
-char *
-dataformat_posttown_n (char *target, int len, const char *source)
+char *dataformat_posttown_n(char *target, int len, const char *source)
 {                               // Check for post town - letters only allowing hyphens, and upper case
-   if ((int)strlen (source) >= len)
+   if ((int) strlen(source) >= len)
       return NULL;
-   strcpy (target, source);
+   strcpy(target, source);
    char *i = target;
    while (*i)
    {
-      *i = toupper (*i);
-      if (*i != ' ' && !isalpha (*i))
+      *i = toupper(*i);
+      if (*i != ' ' && !isalpha(*i))
          return NULL;
       i++;
    }
    return target;
 }
 
-char *
-dataformat_name_n (char *target, int len, const char *source)
+char *dataformat_name_n(char *target, int len, const char *source)
 {                               // Check format for a name - force to initial upper then lower on each word
-   if ((int)strlen (source) >= len)
+   if ((int) strlen(source) >= len)
       return NULL;
-   strcpy (target, source);
+   strcpy(target, source);
    char *i = target,
-      last = ' ';
+       last = ' ';
    while (*i)
    {
-      if (isalpha (last))
-         *i = tolower (*i);
+      if (isalpha(last))
+         *i = tolower(*i);
       else
-         *i = toupper (*i);
+         *i = toupper(*i);
       last = *i++;
    }
    return target;
 }
 
-char *
-dated (char *s)
+char *dated(char *s)
 {
    int a,
-     b,
-     c;
+    b,
+    c;
    char timed = 0;
    static char o[100];
    struct tm t = { 0 };
 
-   if (sscanf (s, "%d-%d-%d", &a, &b, &c) == 3)
+   if (sscanf(s, "%d-%d-%d", &a, &b, &c) == 3)
       t.tm_year = a - 1900, t.tm_mon = b - 1, t.tm_mday = c;
-   else if (sscanf (s, "%d/%d/%d", &a, &b, &c) == 3 && c >= 100 && b <= 12)
+   else if (sscanf(s, "%d/%d/%d", &a, &b, &c) == 3 && c >= 100 && b <= 12)
       t.tm_year = c - 1900, t.tm_mon = b - 1, t.tm_mday = a;
-   else if (sscanf (s, "%d/%d/%d", &a, &b, &c) == 3 && c < 100 && b <= 12)
+   else if (sscanf(s, "%d/%d/%d", &a, &b, &c) == 3 && c < 100 && b <= 12)
    {
       t.tm_year = c, t.tm_mon = b - 1, t.tm_mday = a;
       if (c < 50)
@@ -493,14 +481,14 @@ dated (char *s)
    if (*s == ' ' || *s == 'T')
       s++;
 
-   if (sscanf (s, "%d:%d:%d", &a, &b, &c) == 3)
+   if (sscanf(s, "%d:%d:%d", &a, &b, &c) == 3)
       t.tm_hour = a, t.tm_min = b, t.tm_sec = c, timed = 1;
-   else if (sscanf (s, "%d:%d", &a, &b) == 2)
+   else if (sscanf(s, "%d:%d", &a, &b) == 2)
       t.tm_hour = a, t.tm_min = b, timed = 1;
 
    t.tm_isdst = -1;
-   mktime (&t);
-   sprintf (o, "%04d-%02d-%02d %02d:%02d:%02d", t.tm_year + 1900, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
+   mktime(&t);
+   sprintf(o, "%04d-%02d-%02d %02d:%02d:%02d", t.tm_year + 1900, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
    if (!timed)
       o[10] = 0;
    if (*o == '0')
@@ -508,23 +496,22 @@ dated (char *s)
    return o;
 }
 
-char *
-net (char *s)
+char *net(char *s)
 {
    static char o[50];
    char temp[100];
    int bits = -1,
-      res;
-   char *p = strchr (s, '/');
+       res;
+   char *p = strchr(s, '/');
    if (p)
    {
       *p++ = 0;
-      bits = atoi (p);
+      bits = atoi(p);
    }
    int af;
-   res = inet_pton (af = AF_INET, s, temp);
+   res = inet_pton(af = AF_INET, s, temp);
    if (res <= 0)
-      res = inet_pton (af = AF_INET6, s, temp);
+      res = inet_pton(af = AF_INET6, s, temp);
    if (res <= 0)
       return "";
    int max = (af == AF_INET ? 32 : 128);
@@ -544,24 +531,23 @@ net (char *s)
          b += 8;
       }
    }
-   inet_ntop (af, temp, o, sizeof (o));
+   inet_ntop(af, temp, o, sizeof(o));
    if (bits >= 0 && !uktel)
-      sprintf (o + strlen (o), "/%d", bits);
+      sprintf(o + strlen(o), "/%d", bits);
    return o;
 }
 
-char *
-form (char *i)
+char *form(char *i)
 {
    static char out[1000];
    char *o = out,
-      *e = out + sizeof (out);
+       *e = out + sizeof(out);
    while (*i && o + 4 < e)
    {
       if (*i == ' ')
          *o++ = '+';
-      else if (*i < ' ' || *i >= 0x7F || !isalnum (*i))
-         o += snprintf (o, e - o, "%%%02X", *i);
+      else if (*i < ' ' || *i >= 0x7F || !isalnum(*i))
+         o += snprintf(o, e - o, "%%%02X", *i);
       else
          *o++ = *i;
       i++;
@@ -572,13 +558,12 @@ form (char *i)
 
 #ifndef LIB
 // main
-int
-main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
    char envexpand = 0;
    int a,
-     y = 0,
-      n = 0;
+    y = 0,
+       n = 0;
    for (a = 1; a < argc; a++)
    {
       if (*argv[a] == '-')
@@ -615,43 +600,42 @@ main (int argc, char *argv[])
          char *res = 0;
          char *e = argv[a];
          if (envexpand)
-            e = getenv (e);
+            e = getenv(e);
          if (!e)
             e = "";
-         if (ftype == 't' || (ftype == 'a' && (*e == '+' || isdigit (*e))))
-            res = dataformat_telephone (e, space, uktel);
-         else if (ftype == 'p' || (ftype == 'a' && isalpha (*e)))
-            res = dataformat_postcode (e, space);
+         if (ftype == 't' || (ftype == 'a' && (*e == '+' || isdigit(*e))))
+            res = dataformat_telephone(e, space, uktel);
+         else if (ftype == 'p' || (ftype == 'a' && isalpha(*e)))
+            res = dataformat_postcode(e, space);
          else if (ftype == 'c')
-            res = ccard (e);
+            res = ccard(e);
          else if (ftype == 'w')
-            res = words (e);
+            res = words(e);
          else if (ftype == 'e')
-            res = dataformat_email (e);
+            res = dataformat_email(e);
          else if (ftype == 'D')
-            res = dataformat_domain (e);
+            res = dataformat_domain(e);
          else if (ftype == 'd')
-            res = dated (e);
+            res = dated(e);
          else if (ftype == 'n')
-            res = net (e);
+            res = net(e);
          else if (ftype == 'f')
-            res = form (e);
+            res = form(e);
          else
-            errx (1, "Unknown format");
+            errx(1, "Unknown format");
          if (res)
          {
+            if (y)
+               printf("\n");    // More than one result
             y++;
-            printf ("%s\n", res);
+            printf("%s", res);
          } else
-         {
             n++;
-            printf ("\n");
-         }
       }
    }
    if (!y && !n)
-      fprintf (stderr,
-               "dataformat [-tpasuicwedxD] <fields>\n-t\tTelephone numbers expected\n-p\tPostcodes expected\n-a\tAuto identify\n-s\tSpace the output\n-i\tInt format telephone number\n-u\tUK format telephone numbers\n-c\tCredit card number\n-w\tWords\n-e\tEmail\n-d\tDate\n-x\tExpand env name\n-n\tNetwork ip/bits\n-D\tDomain\n");
+      fprintf(stderr,
+              "dataformat [-tpasuicwedxD] <fields>\n-t\tTelephone numbers expected\n-p\tPostcodes expected\n-a\tAuto identify\n-s\tSpace the output\n-i\tInt format telephone number\n-u\tUK format telephone numbers\n-c\tCredit card number\n-w\tWords\n-e\tEmail\n-d\tDate\n-x\tExpand env name\n-n\tNetwork ip/bits\n-D\tDomain\n");
    return !y;
 }
 #endif
