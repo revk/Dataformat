@@ -381,7 +381,8 @@ char *dataformat_domain_n(char *target, int len, const char *source)
 {                               // Domain syntax check and lower case
    if ((int) strlen(source) >= len)
       return NULL;
-   strcpy(target, source);
+   if (source != target)
+      strcpy(target, source);
    int dot = 0;
    char *i = target;
    while (*i)
@@ -453,6 +454,40 @@ char *dataformat_name_n(char *target, int len, const char *source)
          *i = toupper(*i);
       last = *i++;
    }
+   return target;
+}
+
+char *dataformat_toot_n(char *target, int len, const char *source)
+{                               // Check and normalise format for a fediverse handle (some assumptions here)
+   if ((int) strlen(source) >= len)
+      return NULL;
+   if (!strncasecmp(source, "https://", 8))
+   {                            // Work on basis of https://host/@handle and normalise
+      char *o = target;
+      const char *i = strrchr(source, '@');
+      if (!i)
+         return NULL;
+      while (*i)
+         *o++ = *i++;
+      *o++ = '@';
+      i = source + 8;
+      while (*i != '/')
+         *o++ = *i++;
+      *o = 0;
+   } else
+      strcpy(target, source);
+   // Expect @handle@host
+   char *i = target;
+   if (*i++ != '@')
+      return NULL;
+   while (isalnum(*i) || *i == '_')
+      i++;
+   if (i == target + 1)
+      return NULL;
+   if (*i++ != '@')
+      return NULL;
+   if (!dataformat_domain_n(i, len - (i - target), i))
+      return NULL;
    return target;
 }
 
@@ -615,6 +650,8 @@ int main(int argc, char *argv[])
             res = dataformat_email(e);
          else if (ftype == 'D')
             res = dataformat_domain(e);
+         else if (ftype == 'T')
+            res = dataformat_toot(e);
          else if (ftype == 'd')
             res = dated(e);
          else if (ftype == 'n')

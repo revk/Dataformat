@@ -37,3 +37,6 @@ char * dataformat_posttown_n (char *target, int len, const char *source);
 char * dataformat_name_n (char *target, int len, const char *source);
 #define dataformat_name(source) dataformat_name_n(alloca(strlen(source)+1),strlen(source)+1,source)
 
+char * dataformat_toot_n (char *target, int len, const char *source);
+#define dataformat_toot(source) dataformat_toot_n(alloca(strlen(source)+1),strlen(source)+1,source)
+
