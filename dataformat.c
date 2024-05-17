@@ -471,9 +471,10 @@ dataformat_name_n (char *target, int len, const char *source)
 
 char *
 dataformat_az_n (char *target, int len, const char *source)
-{                               // Reduce to just letters A-Z and space
+{                               // Reduce to just letters A-Z and single space separators
    char *o = target;
    char *end = o + len - 1;
+   char space = 0;
    while (*source)
    {
       char c[6],
@@ -482,14 +483,17 @@ dataformat_az_n (char *target, int len, const char *source)
       while (cp < c + sizeof (c) - 1 && (*source & 0xC0) == 0x80)
          *cp++ = *source++;
       *cp = 0;
-      if (*c == ' ')
-         *o++ = *c;
+      if (strstr (unicode_space, c))
+         space = 1;
       else
          for (int i = 0; i < 26; i++)
-            if (strstr (az[i], c))
+            if (strstr (unicode_az[i], c))
             {
+               if (space && o > target && o < end)
+                  *o++ = ' ';
                if (o < end)
                   *o++ = 'A' + i;
+               space = 0;
                break;
             }
    }
