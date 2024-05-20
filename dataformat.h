@@ -22,6 +22,9 @@ char *dataformat_telephone_n(char *target,int len,const char *source,int space,i
 char *dataformat_email_n(char *target,int len,const char *source);
 #define dataformat_email(source) dataformat_email_n(alloca(256),256,source)
 
+char *dataformat_email_hidden_n(char *target,int len,const char *source);
+#define dataformat_email_hidden(source) dataformat_email_hidden_n(alloca(256),256,source)
+
 char *dataformat_postcode_n(char *target,int len,const char *source,int space);
 #define	dataformat_postcode(source,space) dataformat_postcode_n(alloca(9),9,source,space)
 

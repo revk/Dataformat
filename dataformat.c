@@ -386,6 +386,24 @@ dataformat_email_n (char *target, int len, const char *source)
 }
 
 char *
+dataformat_email_hidden_n (char *target, int len, const char *source)
+{                               // Email syntax check and case fix
+	target=dataformat_email_n(target,len,source);
+	if(target)
+	{ // Obfuscate local part
+		int n;
+		for(n=0;target[n]!='@';n++);
+		// Masked email address: first few characters of “username” element and full “domain” element, all other characters replaced with *.
+		// The number of unmasked characters should be no more than 50% of the entire username or 3, whichever is smaller,
+		// e.g.: nia************@gmail.com da**@daves-domain.com
+		n/=2;
+		for(;target[n]!='@';n++)target[n]='*';
+	}
+	return target;
+	
+}
+
+char *
 dataformat_domain_n (char *target, int len, const char *source)
 {                               // Domain syntax check and lower case
    if ((int) strlen (source) >= len)
@@ -698,6 +716,8 @@ main (int argc, char *argv[])
             res = words (e);
          else if (ftype == 'e')
             res = dataformat_email (e);
+         else if (ftype == 'E')
+            res = dataformat_email_hidden (e);
          else if (ftype == 'z')
             res = dataformat_az (e);
          else if (ftype == 'D')
