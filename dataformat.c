@@ -388,19 +388,20 @@ dataformat_email_n (char *target, int len, const char *source)
 char *
 dataformat_email_hidden_n (char *target, int len, const char *source)
 {                               // Email syntax check and case fix
-	target=dataformat_email_n(target,len,source);
-	if(target)
-	{ // Obfuscate local part
-		int n;
-		for(n=0;target[n]!='@';n++);
-		// Masked email address: first few characters of “username” element and full “domain” element, all other characters replaced with *.
-		// The number of unmasked characters should be no more than 50% of the entire username or 3, whichever is smaller,
-		// e.g.: nia************@gmail.com da**@daves-domain.com
-		n/=2;
-		for(;target[n]!='@';n++)target[n]='*';
-	}
-	return target;
-	
+   target = dataformat_email_n (target, len, source);
+   if (target)
+   {                            // Obfuscate local part
+      int n;
+      for (n = 0; target[n] != '@'; n++);
+      // Masked email address: first few characters of “username” element and full “domain” element, all other characters replaced with *.
+      // The number of unmasked characters should be no more than 50% of the entire username or 3, whichever is smaller,
+      // e.g.: nia************@gmail.com da**@daves-domain.com
+      n /= 2;
+      for (; target[n] != '@'; n++)
+         target[n] = '*';
+   }
+   return target;
+
 }
 
 char *
@@ -490,6 +491,9 @@ dataformat_name_n (char *target, int len, const char *source)
 char *
 dataformat_az_n (char *target, int len, const char *source)
 {                               // Reduce to just letters A-Z and single space separators
+   // • Any accented characters will be replaced by the equivalent non-accented character.
+   // • All characters will be converted to upper case.
+   // • Any characters outside of A-Z will be removed.
    char *o = target;
    char *end = o + len - 1;
    char space = 0;
