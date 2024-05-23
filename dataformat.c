@@ -393,12 +393,22 @@ dataformat_email_hidden_n (char *target, int len, const char *source)
    {                            // Obfuscate local part
       int n;
       for (n = 0; target[n] != '@'; n++);
-      // Masked email address: first few characters of “username” element and full “domain” element, all other characters replaced with *.
-      // The number of unmasked characters should be no more than 50% of the entire username or 3, whichever is smaller,
-      // e.g.: nia************@gmail.com da**@daves-domain.com
-      n /= 2;
-      for (; target[n] != '@'; n++)
-         target[n] = '*';
+// The domain should be fully visible to aid the customer to
+// identify the email hosting provider the email went to. It Is
+// recommended to mask all but 2 characters of the email
+// address. If the addressee is 4 or 5 characters, then all but 1
+// character must be masked, and if the addressee is less than 4
+// characters then all characters of the addressee must be
+// obfuscated. For example…
+      int a = 0;
+      if (n > 5)
+         a = 2;
+      else if (n > 3)
+         a = 1;
+      n -= a;
+      int s = a / 2;
+      while (n--)
+         target[s++] = '*';
    }
    return target;
 
