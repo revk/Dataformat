@@ -32,17 +32,17 @@ char *dataformat_domain_n(char *target,int len,const char *source);
 #define dataformat_domain(source) dataformat_domain_n(alloca(256),256,source)
 
 char * dataformat_token_n (char *target, int len, const char *source,const char*chars);
-#define dataformat_token(source,chars) dataformat_token_n(alloca(strlen(source)+1),strlen(source)+1,source,chars)
+#define dataformat_token(source,chars) dataformat_token_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source,chars)
 
 char * dataformat_posttown_n (char *target, int len, const char *source);
-#define dataformat_posttown(source) dataformat_posttown_n(alloca(strlen(source)+1),strlen(source)+1,source)
+#define dataformat_posttown(source) dataformat_posttown_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source)
 
 char * dataformat_name_n (char *target, int len, const char *source);
-#define dataformat_name(source) dataformat_name_n(alloca(strlen(source)+1),strlen(source)+1,source)
+#define dataformat_name(source) dataformat_name_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source)
 
 char * dataformat_toot_n (char *target, int len, const char *source);
-#define dataformat_toot(source) dataformat_toot_n(alloca(strlen(source)+1),strlen(source)+1,source)
+#define dataformat_toot(source) dataformat_toot_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source)
 
-char * dataformat_az_n (char *target, int len, const char *source);
-#define dataformat_az(source) dataformat_az_n(alloca(strlen(source)+1),strlen(source)+1,source)
+char * dataformat_azn_n (char *target, int len, const char *source);
+#define dataformat_azn(source) dataformat_azn_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source)
 

@@ -27,7 +27,7 @@
 #include <time.h>
 #include <err.h>
 #include "dataformat.h"
-#include "unicodeaz.h"
+#include "unicodeazn.h"
 
 char space = 0;
 char uktel = 0;
@@ -499,11 +499,11 @@ dataformat_name_n (char *target, int len, const char *source)
 }
 
 char *
-dataformat_az_n (char *target, int len, const char *source)
-{                               // Reduce to just letters A-Z and single space separators
-   // • Any accented characters will be replaced by the equivalent non-accented character.
+dataformat_azn_n (char *target, int len, const char *source)
+{                               // Reduce to just letters A-Z, 0-9, and single space separators
+   // • Any accented characters or alternative will be replaced by the equivalent non-accented character.
    // • All characters will be converted to upper case.
-   // • Any characters outside of A-Z will be removed.
+   // • Any characters outside of A-Z, 0-9, and space will be removed.
    char *o = target;
    char *end = o + len - 1;
    char space = 0;
@@ -519,7 +519,7 @@ dataformat_az_n (char *target, int len, const char *source)
          space = 1;
       else
          for (int i = 0; i < 26; i++)
-            if (strstr (unicode_az[i], c))
+            if (strstr (unicode_azn[i], c))
             {
                if (space && o > target && o < end)
                   *o++ = ' ';
@@ -733,7 +733,7 @@ main (int argc, char *argv[])
          else if (ftype == 'E')
             res = dataformat_email_hidden (e);
          else if (ftype == 'z')
-            res = dataformat_az (e);
+            res = dataformat_azn (e);
          else if (ftype == 'D')
             res = dataformat_domain (e);
          else if (ftype == 'T')
