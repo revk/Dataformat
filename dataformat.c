@@ -330,15 +330,9 @@ words (char *c)
 char *
 dataformat_email_n (char *target, int len, const char *source)
 {                               // Email syntax check and case fix
-   if (!source)
-   {
-      if (len && target)
-         *target = 0;
-      return NULL;
-   }
-   if (!source)
-      return NULL;
-   if ((int) strlen (source) >= len)
+   if (len && target)
+      *target = 0;
+   if (!source || (int) strlen (source) >= len)
       return NULL;
    strcpy (target, source);
    int dot = 0;
@@ -394,12 +388,6 @@ dataformat_email_n (char *target, int len, const char *source)
 char *
 dataformat_email_hidden_n (char *target, int len, const char *source)
 {                               // Email syntax check and case fix
-   if (!source)
-   {
-      if (len && target)
-         *target = 0;
-      return NULL;
-   }
    target = dataformat_email_n (target, len, source);
    if (target)
    {                            // Obfuscate local part
@@ -429,13 +417,9 @@ dataformat_email_hidden_n (char *target, int len, const char *source)
 char *
 dataformat_domain_n (char *target, int len, const char *source)
 {                               // Domain syntax check and lower case
-   if (!source)
-   {
-      if (len && target)
-         *target = 0;
-      return NULL;
-   }
-   if ((int) strlen (source) >= len)
+   if (len && target)
+      *target = 0;
+   if (!source || (int) strlen (source) >= len)
       return NULL;
    if (source != target)
       strcpy (target, source);
@@ -462,13 +446,9 @@ dataformat_domain_n (char *target, int len, const char *source)
 char *
 dataformat_token_n (char *target, int len, const char *source, const char *chars)
 {                               // Check for token (letter then letters+numbers + chars) and upper case
-   if (!source)
-   {
-      if (len && target)
-         *target = 0;
-      return NULL;
-   }
-   if ((int) strlen (source) >= len)
+   if (len && target)
+      *target = 0;
+   if (!source || (int) strlen (source) >= len)
       return NULL;
    strcpy (target, source);
    char *i = target;
@@ -489,13 +469,9 @@ dataformat_token_n (char *target, int len, const char *source, const char *chars
 char *
 dataformat_posttown_n (char *target, int len, const char *source)
 {                               // Check for post town - letters only allowing hyphens, and upper case
-   if (!source)
-   {
-      if (len && target)
-         *target = 0;
-      return NULL;
-   }
-   if ((int) strlen (source) >= len)
+   if (len && target)
+      *target = 0;
+   if (!source || (int) strlen (source) >= len)
       return NULL;
    strcpy (target, source);
    char *i = target;
@@ -512,13 +488,9 @@ dataformat_posttown_n (char *target, int len, const char *source)
 char *
 dataformat_name_n (char *target, int len, const char *source)
 {                               // Check format for a name - force to initial upper then lower on each word
-   if (!source)
-   {
-      if (len && target)
-         *target = 0;
-      return NULL;
-   }
-   if ((int) strlen (source) >= len)
+   if (len && target)
+      *target = 0;
+   if (!source || (int) strlen (source) >= len)
       return NULL;
    strcpy (target, source);
    char *i = target,
@@ -537,12 +509,10 @@ dataformat_name_n (char *target, int len, const char *source)
 char *
 dataformat_azn_n (char *target, int len, const char *source)
 {                               // Reduce to just letters A-Z, 0-9, and single space separators
-   if (!source)
-   {
-      if (len && target)
-         *target = 0;
+   if (len && target)
+      *target = 0;
+   if (!source || (int) strlen (source) >= len)
       return NULL;
-   }
    // • Any accented characters or alternative will be replaced by the equivalent non-accented character.
    // • All characters will be converted to upper case.
    // • Any characters outside of A-Z, 0-9, and space will be removed.
@@ -579,13 +549,9 @@ dataformat_azn_n (char *target, int len, const char *source)
 char *
 dataformat_toot_n (char *target, int len, const char *source)
 {                               // Check and normalise format for a fediverse handle (some assumptions here)
-   if (!source)
-   {
-      if (len && target)
-         *target = 0;
-      return NULL;
-   }
-   if ((int) strlen (source) >= len)
+   if (len && target)
+      *target = 0;
+   if (!source || (int) strlen (source) >= len)
       return NULL;
    if (!strncasecmp (source, "https://", 8))
    {                            // Work on basis of https://host/@handle and normalise
