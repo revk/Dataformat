@@ -517,7 +517,7 @@ dataformat_azn_n (char *target, int len, const char *source)
    // • All characters will be converted to upper case.
    // • Any characters outside of A-Z, 0-9, and space will be removed.
    char *o = target;
-   char *end = o + len - 1;
+   char *end = o + len;
    char space = 0;
    while (*source)
    {
@@ -530,13 +530,13 @@ dataformat_azn_n (char *target, int len, const char *source)
       if (strstr (unicode_space, c))
          space = 1;
       else
-         for (int i = 0; i < 26; i++)
+         for (unsigned int i = 0; i < sizeof (unicode_azn) / sizeof (*unicode_azn); i++)
             if (strstr (unicode_azn[i], c))
             {
                if (space && o > target && o < end)
                   *o++ = ' ';
                if (o < end)
-                  *o++ = 'A' + i;
+                  *o++ = *unicode_azn[i];
                space = 0;
                break;
             }
