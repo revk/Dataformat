@@ -507,7 +507,7 @@ dataformat_name_n (char *target, int len, const char *source)
 }
 
 char *
-dataformat_azn_n (char *target, int len, const char *source)
+dataformat_azns_n (char *target, int len, const char *source, char digits, char spaces)
 {                               // Reduce to just letters A-Z, 0-9, and single space separators
    if (len && target)
       *target = 0;
@@ -527,10 +527,10 @@ dataformat_azn_n (char *target, int len, const char *source)
       while (cp < c + sizeof (c) - 1 && (*source & 0xC0) == 0x80)
          *cp++ = *source++;
       *cp = 0;
-      if (strstr (unicode_space, c))
+      if (spaces && strstr (unicode_space, c))
          space = 1;
       else
-         for (unsigned int i = 0; i < sizeof (unicode_azn) / sizeof (*unicode_azn); i++)
+         for (int i = 0; i < (digits ? (int) (sizeof (unicode_azn) / sizeof (*unicode_azn)) : 26); i++)
             if (strstr (unicode_azn[i], c))
             {
                if (space && o > target && o < end)
