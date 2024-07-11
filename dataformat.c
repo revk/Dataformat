@@ -529,7 +529,11 @@ dataformat_azns_n (char *target, int len, const char *source, char digits, char 
       *cp = 0;
       if (spaces && strstr (unicode_space, c))
          space = 1;
-      else
+      else if (!strcmp (c, "ß") || !strcmp (c, "ẞ"))
+      {                         // FFS
+         *o++ = 'S';
+         *o++ = 'S';
+      } else
          for (int i = 0; i < (digits ? (int) (sizeof (unicode_azn) / sizeof (*unicode_azn)) : 26); i++)
             if (strstr (unicode_azn[i], c))
             {
