@@ -136,7 +136,7 @@ dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
             if (t != 13)
                return NULL;     // bad length
             if (res[4] == '0' && res[5] == '0')
-            {
+            {                   // 020 is area code, but 0200 is special use case, so space differently to look pretty as no local dialling
                if (res[6] == '0')
                {
                   if (res[8] == '0' && res[9] == '0' && res[10] == '0')
@@ -159,19 +159,16 @@ dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
             spacing = 0x124;    // +44 1XX XXX XXXX
          } else if (res[3] == '1')
          {
-            if (res[7] <= '1' || (res[7] == '9' && res[8] == '9' && res[9] == '9'))
-               return NULL;     // bad content
-            spacing = 0x44;     // +44 1XXX XXXXXX
+            if (!((strncmp (res + 3, "1202", 4) && res[7] <= '1') || (res[7] == '9' && res[8] == '9' && res[9] == '9')))
+               spacing = 0x44;  // +44 1XXX XXXXXX (yes 01202 Bournmouth allows numbers starting 0, so space it)
          } else if (res[3] == '3' || res[3] == '5')
          {
-            if (t != 13)
-               return NULL;     // bad length
-            spacing = 0x54;     // +44 3X XX XXXXXX
+            if (t == 13)
+               spacing = 0x54;  // +44 3X XX XXXXXX
          } else if (res[3] == '7')
          {
-            if (t != 13)
-               return NULL;     // bad length
-            spacing = 0x44;     // +44 7XXX XXXXXX
+            if (t == 13)
+               spacing = 0x44;  // +44 7XXX XXXXXX
          } else if (res[3] == '8')
          {
             if (t == 13)
