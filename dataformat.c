@@ -750,7 +750,7 @@ main (int argc, char *argv[])
          else if (ftype == 'z')
             res = dataformat_az (e);
          else if (ftype == 'Z')
-            res = dataformat_azn (e);
+            res = dataformat_azns (e);
          else if (ftype == 'D')
             res = dataformat_domain (e);
          else if (ftype == 'T')
@@ -775,7 +775,7 @@ main (int argc, char *argv[])
    }
    if (!y && !n)
       fprintf (stderr,
-               "dataformat [-tpasuicwedxD] <fields>\n-t\tTelephone numbers expected\n-p\tPostcodes expected\n-a\tAuto identify\n-s\tSpace the output\n-i\tInt format telephone number\n-u\tUK format telephone numbers\n-c\tCredit card number\n-w\tWords\n-e\tEmail\n-d\tDate\n-x\tExpand env name\n-n\tNetwork ip/bits\n-D\tDomain\n-z\tA-Z only");
+               "dataformat [-tpasuicwedxD] <fields>\n-t\tTelephone numbers expected\n-p\tPostcodes expected\n-a\tAuto identify\n-s\tSpace the output\n-i\tInt format telephone number\n-u\tUK format telephone numbers\n-c\tCredit card number\n-w\tWords\n-e\tEmail\n-d\tDate\n-x\tExpand env name\n-n\tNetwork ip/bits\n-D\tDomain\n-z\tA-Z only\n-Z A-Z/0-9/space only\n");
    return !y;
 }
 #endif
