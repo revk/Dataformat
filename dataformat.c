@@ -504,7 +504,7 @@ dataformat_name_n (char *target, int len, const char *source)
 }
 
 char *
-dataformat_azns_n (char *target, int len, const char *source, char digits, char spaces)
+dataformat_azns_n (char *target, int len, const char *source, char digits, char spaces, char amps)
 {                               // Reduce to just letters A-Z, 0-9, and single space separators
    if (len && target)
       *target = 0;
@@ -524,7 +524,9 @@ dataformat_azns_n (char *target, int len, const char *source, char digits, char 
       while (cp < c + sizeof (c) - 1 && (*source & 0xC0) == 0x80)
          *cp++ = *source++;
       *cp = 0;
-      if (spaces && strstr (unicode_space, c))
+      if (amps && *c == '&')
+         *o++ = '&';
+      else if (spaces && strstr (unicode_space, c))
          space = 1;
       else if (!strcmp (c, "ß") || !strcmp (c, "ẞ"))
       {                         // FFS
@@ -750,7 +752,7 @@ main (int argc, char *argv[])
          else if (ftype == 'z')
             res = dataformat_az (e);
          else if (ftype == 'Z')
-            res = dataformat_azns (e);
+            res = dataformat_aznsa (e);
          else if (ftype == 'D')
             res = dataformat_domain (e);
          else if (ftype == 'T')

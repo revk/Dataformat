@@ -43,9 +43,10 @@ char * dataformat_name_n (char *target, int len, const char *source);
 char * dataformat_toot_n (char *target, int len, const char *source);
 #define dataformat_toot(source) dataformat_toot_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source)
 
-char * dataformat_azns_n (char *target, int len, const char *source,char digits,char spaces);
-#define dataformat_az(source) dataformat_azns_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source,0,0)
-#define dataformat_azn(source) dataformat_azns_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source,1,0)
-#define dataformat_azs(source) dataformat_azns_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source,0,1)
-#define dataformat_azns(source) dataformat_azns_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source,1,1)
+char * dataformat_azns_n (char *target, int len, const char *source,char digits,char spaces,char amps);
+#define dataformat_az(source) dataformat_azns_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source,0,0,0)
+#define dataformat_azn(source) dataformat_azns_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source,1,0,0)
+#define dataformat_azs(source) dataformat_azns_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source,0,1,0)
+#define dataformat_azns(source) dataformat_azns_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source,1,1,0)
+#define dataformat_aznsa(source) dataformat_azns_n(alloca(strlen(source?:"")+1),strlen(source?:"")+1,source,1,1,1)
 
