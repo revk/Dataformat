@@ -37,6 +37,9 @@ char ftype = 'a';
 char *
 dataformat_postcode_n (char *res, int len, const char *p, int space)
 {
+   if (!res || !len)
+      return NULL;
+   *res = 0;
    if (!p)
       return NULL;
    int f = 0,
@@ -47,10 +50,16 @@ dataformat_postcode_n (char *res, int len, const char *p, int space)
       else
          f++;
    if (p[f])
+   {
+      *res = 0;
       return NULL;              // too long 
+   }
    res[t] = 0;
    if (t < 5 || t > 7)
+   {
+      *res = 0;
       return NULL;              // wrong length
+   }
    f = 0;
    if (isalpha (res[f]))        // letter
    {
@@ -74,6 +83,7 @@ dataformat_postcode_n (char *res, int len, const char *p, int space)
          }
       }
    }
+   *res = 0;
    return NULL;                 // bad format
 }
 
@@ -83,6 +93,9 @@ dataformat_postcode_n (char *res, int len, const char *p, int space)
 char *
 dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
 {
+   if (!res || !len)
+      return NULL;
+   *res = 0;
    if (!p)
       return NULL;
    int f = 0,
@@ -96,9 +109,15 @@ dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
       else if (p[f] == '-' || p[f] == '(' || p[f] == ')' || p[f] == '-' || p[f] == '.' || p[f] == ' ')
          f++;
       else
+      {
+         *res = 0;
          return NULL;
+      }
    if (p[f])
+   {
+      *res = 0;
       return NULL;              // too long
+   }
    res[t] = 0;
    if (res[0] == '0' && res[1] == '0' && res[2] != '0') // International 00 prefix
    {
@@ -119,22 +138,29 @@ dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
       memmove (res + 1, res, ++t);
       res[0] = '+';
    }
-   if (res[0] != '+')
-      return NULL;              // local number, or something wrong
-   if (res[1] == '0')
-      return NULL;              // +0 is not sensible
+   if (res[0] != '+' || res[1] == '0')
+   {                            // local or +0
+      *res = 0;
+      return NULL;
+   }
 
    if (res[1] == '4' && res[2] == '4')
    {                            // is a UK number
       if (t < 12 || t > 13)
+      {
+         *res = 0;
          return NULL;           // bad length
+      }
       if (space)
       {                         // space out the number
          unsigned long spacing = 0;     // bit map of where to put spaces...
          if (res[3] == '2')
          {
             if (t != 13)
+            {
+               *res = 0;
                return NULL;     // bad length
+            }
             if (res[4] == '0' && res[5] == '0')
             {                   // 020 is area code, but 0200 is special use case, so space differently to look pretty as no local dialling
                if (res[6] == '0')
@@ -147,15 +173,24 @@ dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
             } else
             {
                if (res[5] <= '1' || (res[5] == '9' && res[6] == '9' && res[7] == '9'))
+               {
+                  *res = 0;
                   return NULL;  // bad content
+               }
                spacing = 0x114; // +44 2X XXXX XXXX
             }
          } else if (res[3] == '1' && (res[4] == '1' || res[5] == '1'))
          {
             if (t != 13)
+            {
+               *res = 0;
                return NULL;     // bad length
+            }
             if (res[6] <= '1' || (res[6] == '9' && res[7] == '9' && res[8] == '9'))
+            {
+               *res = 0;
                return NULL;     // bad content
+            }
             spacing = 0x124;    // +44 1XX XXX XXXX
          } else if (res[3] == '1')
          {
@@ -205,10 +240,11 @@ dataformat_telephone_n (char *res, int len, const char *p, int space, int uktel)
          t -= 2;
          res[0] = '0';
       }
-   } else if (t > 16)
+   } else if (t > 16 || t < 8)
+   {                            // Silly len
+      *res = 0;
       return NULL;              // too long
-   else if (t < 8)
-      return NULL;              // too short
+   }
    return res;
 }
 
